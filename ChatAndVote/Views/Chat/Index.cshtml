@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Chat</h2>
+
+
+
+<ul id="messages"></ul>
+
+@using(Ajax.BeginForm("PostMessage", new AjaxOptions())){
+    <p>
+        Say: @Html.TextBox("message")
+        <input type="submit" />
+    </p>
+}
+
+
+<script src="~/Scripts/jquery-1.8.2.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script type="text/javascript">
+    function getNextMessage(){
+        $.post("@Url.Action("GetNextMessage")", function (message) {
+            $("<li>").text(message).appendTo("#messages");
+            getNextMessage();
+        });
+    }
+    getNextMessage();
+</script>

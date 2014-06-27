@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Chat</h2>
+
+
+
+<ul id="messages"></ul>
+
+@using(Ajax.BeginForm("PostMessage", new AjaxOptions()))
+{
+    <p>
+        Say: @Html.TextBox("message")
+        <input type="submit" />
+    </p>
+}
+
+
+<script src="~/Scripts/jquery-1.8.2.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script type="text/javascript">
+    var eventSrc = new EventSource("@Url.Action("GetMessages")");
+
+    // works even with the code below uncommented
+    // TO DO: check the difference
+    //eventSrc.onmessage = function (e) {
+    //    console.log(e.data);
+
+    //}
+
+    eventSrc.addEventListener("message", function (evt) {
+        console.log(evt);
+        $("<li>").text(evt.data).appendTo("#messages");
+    });
+
+</script>

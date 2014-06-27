@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Chat</h2>
+
+
+
+<ul id="messages"></ul>
+
+@using(Ajax.BeginForm("PostMessage", new AjaxOptions()))
+{
+    <p>
+        Say: @Html.TextBox("message")
+        <input type="submit" />
+    </p>
+}
+
+
+<script src="~/Scripts/jquery-1.8.2.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jquery.signalR-2.1.0.js"></script>
+<script src="~/signalr/hubs"></script>
+<script type="text/javascript">
+    var messagesHub = $.connection.messages;
+
+    messagesHub.client.addMessage = function (messageFromServer) {
+        $("<li>").text(messageFromServer).appendTo("#messages");
+    }
+
+    $("form").submit(function () {
+
+        var text = $("#message").val();
+        messagesHub.server.send(text);
+        $("#message").val("").focus();
+        return false; // Don't do a real form submission
+    });
+
+
+    $.connection.hub.start();
+
+
+</script>
